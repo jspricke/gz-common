@@ -24,6 +24,7 @@
 
 #include "gz/common/testing/AutoLogFixture.hh"
 #include "gz/common/testing/TestPaths.hh"
+#include "gz/common/testing/Utils.hh"
 
 using namespace gz;
 
@@ -40,7 +41,11 @@ TEST_F(DemTest, MissingFile)
 TEST_F(DemTest, NotDem)
 {
   common::Dem dem;
-  const auto path = common::testing::TestFile("CMakeLists.txt");
+  auto tmpDir = common::testing::MakeTestTempDirectory();
+  const auto path = common::joinPaths(tmpDir->Path(), "not_valid_dem.txt");
+
+  ASSERT_TRUE(tmpDir->Valid());
+  EXPECT_TRUE(common::testing::createNewEmptyFile(path));
   EXPECT_NE(dem.Load(path), 0);
 }
 
